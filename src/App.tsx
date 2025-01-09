@@ -9,21 +9,17 @@ function getRandomName(): string {
 }
 
 type State = {
-  today: Date;
   clockName: string;
   hasClock: boolean;
 };
 
 export class App extends React.Component<{}, State> {
   state: State = {
-    today: new Date(),
     clockName: 'Clock-0',
     hasClock: true,
   };
 
   timerId = 0;
-
-  timeToday = 0;
 
   handleStart = () => {
     if (this.timerId) {
@@ -39,19 +35,10 @@ export class App extends React.Component<{}, State> {
         clockName: getRandomName(),
       });
     }, 3000);
-
-    this.timeToday = window.setInterval(() => {
-      // eslint-disable-next-line no-console
-      console.log(this.state.today.toUTCString().slice(-12, -4));
-      this.setState({
-        today: new Date(),
-      });
-    }, 1000);
   };
 
   handleStop = () => {
     window.clearInterval(this.timerId);
-    window.clearInterval(this.timeToday);
     this.setState({
       hasClock: false,
     });
@@ -78,12 +65,12 @@ export class App extends React.Component<{}, State> {
   }
 
   render() {
-    const { hasClock, today, clockName } = this.state;
+    const { hasClock, clockName } = this.state;
 
     return (
       <div className="App">
         <h1>React clock</h1>
-        {hasClock && <Clock name={clockName} today={today} />}
+        {hasClock && <Clock name={clockName} />}
       </div>
     );
   }
