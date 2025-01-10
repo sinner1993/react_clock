@@ -19,49 +19,41 @@ export class App extends React.Component<{}, State> {
     hasClock: true,
   };
 
-  timerId = 0;
-
   handleStart = () => {
-    if (this.timerId) {
-      return;
-    }
-
     this.setState({
       hasClock: true,
     });
-
-    this.timerId = window.setInterval(() => {
-      this.setState({
-        clockName: getRandomName(),
-      });
-    }, 3000);
   };
 
   handleStop = () => {
-    window.clearInterval(this.timerId);
     this.setState({
       hasClock: false,
     });
-    this.timerId = 0;
   };
-  // This code starts a timer
+
+  handleClick = () => {
+    this.handleStart();
+  };
+
+  handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    this.handleStop();
+  };
 
   componentDidMount(): void {
-    this.handleStart();
-    document.addEventListener('click', () => {
-      this.handleStart();
-    });
-
-    document.addEventListener('contextmenu', event => {
-      event.preventDefault();
-      this.handleStop();
-    });
+    window.setInterval(() => {
+      this.setState({
+        clockName: getRandomName(),
+      });
+    }, 3300);
+    document.addEventListener('click', this.handleClick);
+    document.addEventListener('contextmenu', this.handleContextMenu);
   }
 
   componentWillUnmount(): void {
     this.handleStop();
-    document.removeEventListener('click', this.handleStart);
-    document.removeEventListener('contextmenu', this.handleStop);
+    document.removeEventListener('click', this.handleClick);
+    document.removeEventListener('contextmenu', this.handleContextMenu);
   }
 
   render() {
@@ -69,7 +61,7 @@ export class App extends React.Component<{}, State> {
 
     return (
       <div className="App">
-        <h1>React clock</h1>
+        <h1>React Clock</h1>
         {hasClock && <Clock name={clockName} />}
       </div>
     );
